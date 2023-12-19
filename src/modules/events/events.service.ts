@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Event } from './events.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateEventDto } from './dto/create-event.dto';
-import { User } from '../users/users.model';
 import { UpdateEventDto } from './dto/update-event.dto';
 
 @Injectable()
@@ -14,23 +13,15 @@ export class EventsService {
   }
 
   async getEventById(id: number) {
-    return await this.eventRepository.findOne({ where: { id } });
+    return await this.eventRepository.findByPk(id);
   }
 
   async getAllEvents(): Promise<Event[]> {
     return await this.eventRepository.findAll();
   }
 
-  async deleteEvent(id: number, userId: number) {
-    const eventToDelete = await this.eventRepository.findOne({
-      where: { id: id },
-    });
-    if (userId !== eventToDelete.userId) {
-      throw new HttpException(
-        "You can not delete others' events",
-        HttpStatus.FORBIDDEN,
-      );
-    }
+  async deleteEvent(id: number) {
+    const eventToDelete = await this.eventRepository.findByPk(id);
     await this.eventRepository.destroy({ where: { id: id } });
     return {
       message: `Event ${eventToDelete.title} was deleted.`,
@@ -39,20 +30,11 @@ export class EventsService {
     // const eventToDelete = await this.eventRepository.findOne({where: {id: id, userId}});
   }
 
-  async updateRecord(
-    dto: UpdateEventDto,
-    id: number,
-    userId: number,
-  ): Promise<Event> {
+  async updateRecord(dto: UpdateEventDto, id: number): Promise<Event> {
     try {
-      const eventToUpdate = await this.eventRepository.findOne({
-        where: { id: id },
-      });
-      if (userId !== eventToUpdate.userId) {
-        throw new HttpException(
-          "You can not delete others' events",
-          HttpStatus.FORBIDDEN,
-        );
+      const eventToUpdate = await this.eventRepository.findByPk(id);
+      if (!eventToUpdate) {
+        console.log('Error');
       }
       const response = await this.eventRepository.update(dto, {
         where: {

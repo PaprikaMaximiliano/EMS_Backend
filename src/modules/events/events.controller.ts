@@ -6,25 +6,23 @@ import {
   Param,
   Post,
   Put,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { UserId } from '../../common/decorators/userId.decorator';
+import { UserOwnsEventGuard } from '../../common/guards/user-owns-event.guard';
 
-interface IRequest {
-  user: any;
-}
 @Controller('events')
 @UseGuards(JwtAuthGuard)
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Post()
-  createEvent(@Body() dto: CreateEventDto, @Req() req: IRequest) {
-    return this.eventsService.createEvent(dto, req.user.id);
+  createEvent(@Body() dto: CreateEventDto, @UserId() userId: number) {
+    return this.eventsService.createEvent(dto, userId);
   }
 
   @Get()
@@ -38,16 +36,14 @@ export class EventsController {
   }
 
   @Delete('/:id')
-  deleteEvent(@Param('id') id: number, @Req() req: IRequest) {
-    return this.eventsService.deleteEvent(id, req.user.id);
+  @UseGuards(UserOwnsEventGuard)
+  deleteEvent(@Param('id') id: number) {
+    return this.eventsService.deleteEvent(id);
   }
 
   @Put('/:id')
-  updateRecord(
-    @Body() dto: UpdateEventDto,
-    @Param('id') id: number,
-    @Req() req: IRequest,
-  ) {
-    return this.eventsService.updateRecord(dto, id, req.user.id);
+  @UseGuards(UserOwnsEventGuard)
+  updateRecord(@Body() dto: UpdateEventDto, @Param('id') id: number) {
+    return this.eventsService.updateRecord(dto, id);
   }
 }

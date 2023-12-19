@@ -4,7 +4,6 @@ import { EventsController } from './events.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Event } from './events.model';
 import { User } from '../users/users.model';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({

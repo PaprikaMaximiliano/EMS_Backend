@@ -1,7 +1,7 @@
 import { User } from './users.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +22,9 @@ export class UsersService {
       where: { id: id },
       include: { all: true },
     });
+    if (!user) {
+      throw new NotFoundException();
+    }
     return user;
   }
 
