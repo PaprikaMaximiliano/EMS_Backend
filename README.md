@@ -35,6 +35,11 @@ $ npm install
 
 ## Running the app
 
+Before running app create .dev.env file in root directory of project and fill it. Also create new database in postgresql. Example of env file is in repository (.example.env).
+
+!!! DO NOT CHANGE PORT OF SERVER !!! 
+
+Frontend sending requests to localhost:5000, so if you change port, site will be broken.
 ```bash
 # development
 $ npm run start
