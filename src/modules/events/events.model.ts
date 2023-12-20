@@ -31,13 +31,17 @@ export class Event extends Model<Event, EventCreationAttrs> {
   @Column({ type: DataType.STRING, allowNull: false })
   title: string;
 
-  // @ApiProperty({example: '123456', description: "Password"})
-  // @Column({type: DataType.ARRAY, allowNull: true})
-  // location: string;
+  @ApiProperty({ example: 'Lviv', description: 'Location of event' })
+  @Column({ type: DataType.STRING, allowNull: false })
+  location: string;
 
   @ApiProperty({ example: 'IT', description: 'Category of event' })
   @Column({ type: DataType.STRING, allowNull: false })
   category: string;
+
+  @ApiProperty({ example: '2022-12-01', description: 'Date of event' })
+  @Column({ type: DataType.DATE, allowNull: false })
+  date: string;
 
   @ApiProperty({
     example: 'This event is about IT.',

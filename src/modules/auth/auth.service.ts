@@ -29,7 +29,7 @@ export class AuthService {
     if (candidate) {
       throw new HttpException(
         'User with this email already exists.',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.CONFLICT,
       );
     }
     const hashPassword = await bcrypt.hash(userDto.password, 5);
@@ -49,6 +49,9 @@ export class AuthService {
 
   private async validateUser(userDto: CreateUserDto) {
     const user = await this.userService.getUserByEmail(userDto.email);
+    if (!user) {
+      throw new UnauthorizedException({ message: 'Wrong password or email.' });
+    }
     const passwordEquals = await bcrypt.compare(
       userDto.password,
       user.password,

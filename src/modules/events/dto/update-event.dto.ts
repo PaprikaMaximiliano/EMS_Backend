@@ -14,4 +14,12 @@ export class UpdateEventDto extends PartialType(CreateEventDto) {
   @IsOptional()
   @IsString()
   readonly description?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly date?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly location?: string;
 }
